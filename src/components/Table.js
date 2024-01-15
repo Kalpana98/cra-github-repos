@@ -1,10 +1,26 @@
-function Table({ repos }) {
+function Table({ repos, search }) {
 	return (
 		<table>
 			<thead>
 				<tr>
 					<th>Name</th>
 					<th>URL</th>
+				</tr>
+				<tr>
+					<th>
+						<input
+							className='search-input'
+							placeholder='Filter by Name'
+							onChange={(e) => search(e.target.value, 'name')}
+						/>
+					</th>
+					<th>
+						<input
+							className='search-input'
+							placeholder='Filter by URL'
+							onChange={(e) => search(e.target.value, 'url')}
+						/>
+					</th>
 				</tr>
 			</thead>
 			<tbody>
