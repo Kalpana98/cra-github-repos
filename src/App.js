@@ -1,15 +1,15 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import './App.css';
 import Table from './components/Table';
 
-const YourComponent = () => {
-	const userRef = useRef();
+const App = () => {
 	const [repos, setRepos] = useState();
 	const [username, setUsername] = useState();
+	const [input, setInput] = useState();
 	const [message, setMessage] = useState();
 
 	useEffect(() => {
-		if (!username) return setMessage('');
+		if (!username || username === '') return setMessage('No Username Entered');
 		fetch(`https://api.github.com/users/${username}/repos`)
 			.then((res) => {
 				if (res.status === 404) throw Error('User Not Found');
@@ -28,28 +28,32 @@ const YourComponent = () => {
 			});
 	}, [username]);
 
-	function handleSubmit(e) {
+	function handleClick(e) {
 		e.preventDefault();
-		setUsername(userRef.current);
-		// if (!userRef.current || userRef.current === '') setMessage('No Username Entered');
-		userRef.current = '';
+		setUsername(input);
+		setInput('');
+		setRepos([]);
 	}
 
 	return (
 		<div className='container'>
-			<form className='search-container' onSubmit={(e) => handleSubmit(e)}>
+			<div className='search-container'>
 				<input
-					ref={userRef}
 					type='text'
 					className='search-input'
 					placeholder='Enter Github Username...'
-					onChange={(e) => (userRef.current = e.target.value)}
+					onChange={(e) => setInput(e.target.value)}
+					onKeyDown={(e) => {
+						if (e.key === 'Enter') handleClick(e);
+					}}
 				/>
-				<button className='search-button'>Search</button>
-			</form>
+				<button className='search-button' onClick={handleClick}>
+					Search
+				</button>
+			</div>
 			{repos && repos.length ? <Table repos={repos} /> : message}
 		</div>
 	);
 };
 
-export default YourComponent;
+export default App;
