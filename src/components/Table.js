@@ -1,4 +1,16 @@
-function Table({ repos, search }) {
+import { useEffect, useState } from 'react';
+
+function Table({ repos }) {
+	const [filterName, setFilterName] = useState('');
+	const [filterUrl, setFilterUrl] = useState('');
+
+	const filtered = repos.filter(
+		(item) => item.name.includes(filterName) && item.url.includes(filterUrl)
+	);
+
+	// eslint-disable-next-line
+	useEffect(() => {}, [filterName, filterUrl, JSON.stringify(repos)]);
+
 	return (
 		<table>
 			<thead>
@@ -11,20 +23,26 @@ function Table({ repos, search }) {
 						<input
 							className='search-input'
 							placeholder='Filter by Name'
-							onChange={(e) => search(e.target.value, 'name')}
+							value={filterName}
+							onChange={(e) => {
+								setFilterName(e.target.value);
+							}}
 						/>
 					</th>
 					<th>
 						<input
 							className='search-input'
 							placeholder='Filter by URL'
-							onChange={(e) => search(e.target.value, 'url')}
+							value={filterUrl}
+							onChange={(e) => {
+								setFilterUrl(e.target.value);
+							}}
 						/>
 					</th>
 				</tr>
 			</thead>
 			<tbody>
-				{repos.map(({ id, name, url }) => (
+				{filtered.map(({ id, name, url }) => (
 					<tr key={id}>
 						<td>{name}</td>
 						<td>{url}</td>
