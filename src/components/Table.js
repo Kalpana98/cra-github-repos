@@ -1,15 +1,20 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
+import FilterRow from './FilterRow';
 
 function Table({ repos }) {
 	const [filterName, setFilterName] = useState('');
 	const [filterUrl, setFilterUrl] = useState('');
 
 	const filtered = repos.filter(
-		(item) => item.name.includes(filterName) && item.url.includes(filterUrl)
+		(item) =>
+			item.name.trim().toLowerCase().includes(filterName.trim().toLowerCase()) &&
+			item.url.trim().toLowerCase().includes(filterUrl.trim().toLowerCase())
 	);
 
-	// eslint-disable-next-line
-	useEffect(() => {}, [filterName, filterUrl, JSON.stringify(repos)]);
+	const handleFilterInput = (input, filterType) => {
+		if (filterType === 'name') return setFilterName(input);
+		setFilterUrl(input);
+	};
 
 	return (
 		<table>
@@ -18,28 +23,11 @@ function Table({ repos }) {
 					<th>Name</th>
 					<th>URL</th>
 				</tr>
-				<tr>
-					<th>
-						<input
-							className='search-input'
-							placeholder='Filter by Name'
-							value={filterName}
-							onChange={(e) => {
-								setFilterName(e.target.value);
-							}}
-						/>
-					</th>
-					<th>
-						<input
-							className='search-input'
-							placeholder='Filter by URL'
-							value={filterUrl}
-							onChange={(e) => {
-								setFilterUrl(e.target.value);
-							}}
-						/>
-					</th>
-				</tr>
+				<FilterRow
+					filterName={filterName}
+					filterUrl={filterUrl}
+					handleFilterInput={handleFilterInput}
+				/>
 			</thead>
 			<tbody>
 				{filtered.map(({ id, name, url }) => (
